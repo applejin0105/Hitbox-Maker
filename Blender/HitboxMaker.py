@@ -2,7 +2,7 @@ import bpy
 import os
 import mathutils
 
-FEMALE_RADIUS_ARM_SCALE_VALUE = 6.0
+FEMALE_RADIUS_ARM_SCALE_VALUE = 3.0
 MALE_RADIUS_ARM_SCALE_VALUE = 2.5
 
 COMMON_RADIUS_FOREARM_SCALE_VALUE = 0.85
@@ -568,4 +568,5 @@ def main():
         print("Hitbox 생성이 완료되었습니다.")
     
 if __name__ == '__main__':
+
     main()

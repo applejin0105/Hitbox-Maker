@@ -48,8 +48,11 @@ public class AddHitbox : MonoBehaviour
             AddTag.InitTag(t);
         }
         _target = Selection.activeTransform.gameObject;
+
+        CreateHitBox();
+        
     }
-    private static void ClickCreateHitBox()
+    private static void CreateHitBox()
     {
         if (CheckBoneStructure())
         {
@@ -244,7 +247,7 @@ public class AddHitbox : MonoBehaviour
     }
     private static void EndSetting(GameObject obj, GameObject groundCheckerL, GameObject groundCheckerR)
     {
-        obj.GetComponent<BoxCollider>().isTrigger = true;
+        obj.GetComponent<CapsuleCollider>().isTrigger = true;
         obj.AddComponent<Rigidbody>();
         obj.GetComponent<Rigidbody>().automaticCenterOfMass = true;
         obj.GetComponent<Rigidbody>().automaticInertiaTensor = true;
@@ -261,4 +264,5 @@ public class AddHitbox : MonoBehaviour
         groundCheckerR.GetComponent<SphereCollider>().isTrigger = true;
     }
 }
+
 #endif

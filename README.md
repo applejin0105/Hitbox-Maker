@@ -17,7 +17,7 @@
 
 | 파일 | 설명 |
 |------|------|
-| AddHitbox | Bone 구조를 검사하고, 이를 기반으로 Hitbox, 충돌 감지 Capsule, 지면 감지 Sphere를 생성합니다. Mesh Renderer 관련 컴포넌트를 지우고, 콜라이더를 부착합니다. 태그도 설정합니다. |
+| AddHitbox | Bone 구조를 검사하고, 이를 기반으로 Hitbox, 충돌 감지 Capsule를 생성합니다. Mesh Renderer 관련 컴포넌트를 지우고, 콜라이더를 부착합니다. 태그도 설정합니다. |
 | AddLayer | 특정 Layer가 존재하지 않는다면 새로 생성합니다. |
 | AddTag | 특정 Tag가 존재하지 않는다면 새로 생성합니다. |
 | CheckGround | 땅에 붙어있는지 아닌지 검사합니다. |

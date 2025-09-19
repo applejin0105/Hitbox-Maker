@@ -2,13 +2,13 @@ import bpy
 import os
 import mathutils
 
-FEMALE_RADIUS_ARM_SCALE_VALUE = 3.0
+FEMALE_RADIUS_ARM_SCALE_VALUE = 2.0
 MALE_RADIUS_ARM_SCALE_VALUE = 2.5
 
 COMMON_RADIUS_FOREARM_SCALE_VALUE = 0.85
 
-FEMALE_LENGTH_HIP_SCALE_VALUE = 0.67
-MALE_LENGTH_HIP_SCALE_VALUE = 1.2
+FEMALE_LENGTH_HIP_SCALE_VALUE = 2.0
+MALE_LENGTH_HIP_SCALE_VALUE = 1.1
 
 FEMALE_RADIUS_UPLEG_SCALE_VALUE = 3
 MALE_RADIUS_UPLEG_SCALE_VALUE = 2
@@ -74,6 +74,7 @@ def global_bones():
     RIGHT_TOEBASE_BONE_NAME = "RightToeBase"
 
     HIPS_BONE_NAME = "Hips"
+    
 def validChecker():
     isValid = False
     
@@ -144,6 +145,7 @@ def validChecker():
         
     print("Armature와 Bone이 정상적으로 존재합니다. 작업을 시작합니다.")
     return True
+
 def delete_hitbox(keywords):
     found_and_deleted = False
     
@@ -157,12 +159,14 @@ def delete_hitbox(keywords):
                 break
     
     if not found_and_deleted:
-        print(f"삭제할 오브젝트가 존재하지 않습니다.")    
+        print(f"삭제할 오브젝트가 존재하지 않습니다.")   
+         
 def worldLocation(BONE, ISHEAD):
     if ISHEAD == True:
         return arm_obj.matrix_world @ BONE.head_local
     else:
         return arm_obj.matrix_world @ BONE.tail_local
+    
 def bone_location():
     global head_bone_head_location, head_bone_tail_location
     global head_topend_bone_head_location
@@ -255,10 +259,13 @@ def bone_location():
     left_toebase_bone_tail_location = worldLocation(left_toebase_bone, False)
     
     right_toebase_bone_head_location = worldLocation(right_toebase_bone, True)
+    
 def printError(NAME):
     raise ValueError({NAME} + "이(가) 올바르지 않습니다. Armature에" + {NAME} + "이(가) 포함되어 있는지, 이름이 올바른지 확인하십시오.")
+    
 def printCreated(MESH_NAME):
     print(f"{MESH_NAME}가 생성되었고, 부모 연결이 완료되었습니다.")
+    
 def setToObject():
     for obj in bpy.data.objects:
         obj.select_set(False)
@@ -271,14 +278,17 @@ def setToObject():
     if obj is not None:
         obj.select_set(True)
         bpy.context.view_layer.objects.active = obj
+        
 def setToEdit():
     setToObject()
     if bpy.context.object is not None and bpy.context.object.mode != 'EDIT':
         bpy.ops.object.mode_set(mode='EDIT')  
+        
 def setToPose():
     setToObject()
     if bpy.context.object is not None and bpy.context.object.mode != 'POSE':
         bpy.ops.object.mode_set(mode='POSE')
+        
 def makeParentBone(PARENT_BONE_NAME, MESH_NAME):
     mesh = bpy.data.objects.get(MESH_NAME)
     if mesh is None : printError(MESH_NAME)
@@ -306,16 +316,7 @@ def makeParentBone(PARENT_BONE_NAME, MESH_NAME):
         print(f"'{MESH_NAME}'를 '{PARENT_BONE_NAME}'에 부착하지 못했습니다.")
         
     setToObject()
-def makeParentMesh(PARENT_MESH_NAME, CHILD_MESH_NAME):
-    parent_obj = bpy.data.objects[PARENT_MESH_NAME]
-    child_mesh = bpy.data.objects[CHILD_MESH_NAME]
-    if parent_obj is None : printError(PARENT_MESH_NAME)
-    if child_mesh is None : printError(CHILD_MESH_NAME)
-    setToObject()
-    child_mesh.parent = parent_obj
-    child_mesh.matrix_parent_inverse = parent_obj.matrix_world.inverted()
     
-    print("Ground Check가 완료되었습니다.")
 def makePlayerCapsule():
     bottom_mid_location = (left_toebase_bone_head_location + right_toebase_bone_head_location) / 2.0
     
@@ -337,6 +338,7 @@ def makePlayerCapsule():
     cylinder.name = f"PlayerCapsule"
     
     makeParentBone(HIPS_BONE_NAME, cylinder.name)
+    
 def makeHead():
     mid_point = (head_topend_bone_head_location + head_bone_head_location) / 2.0
     distance = (head_topend_bone_head_location - head_bone_head_location).length
@@ -358,6 +360,7 @@ def makeHead():
     makeParentBone(HEAD_BONE_NAME, sphere.name)
     
     printCreated(sphere.name)
+    
 def makeTorso():
     rad = (left_shoulder_bone_tail_location.x - right_shoulder_bone_tail_location.x) / 2.0
     
@@ -381,6 +384,7 @@ def makeTorso():
     
     makeParentBone(HIPS_BONE_NAME, cylinder.name)
     printCreated(cylinder.name)
+    
 def makeNeck():
     rad = (left_shoulder_bone_head_location.x - right_shoulder_bone_head_location.x) / 2.0
     
@@ -407,6 +411,7 @@ def makeNeck():
     
     makeParentBone(NECK_BONE_NAME, cylinder.name)
     printCreated(cylinder.name)
+    
 def makeLimbs(HEAD, TAIL, RADIUS, BONE_NAME):
     length = (TAIL - HEAD).length
     mid_point = (TAIL + HEAD) / 2.0
@@ -431,6 +436,7 @@ def makeLimbs(HEAD, TAIL, RADIUS, BONE_NAME):
     
     makeParentBone(BONE_NAME, cylinder.name)
     printCreated(cylinder.name)
+    
 def makeHand(HEAD, TAIL, LENGTH, WIDTH, DEPTH, BONE_NAME):
     mid_point = (HEAD + TAIL) / 2.0
     
@@ -447,6 +453,7 @@ def makeHand(HEAD, TAIL, LENGTH, WIDTH, DEPTH, BONE_NAME):
     
     makeParentBone(BONE_NAME, cube.name)
     printCreated(cube.name)
+    
 def makeFeet(MID_POINT, WIDTH, LENGTH, DEPTH, BONE_NAME):
     bpy.ops.mesh.primitive_cube_add(
         size = 2.0,
@@ -461,6 +468,7 @@ def makeFeet(MID_POINT, WIDTH, LENGTH, DEPTH, BONE_NAME):
     
     makeParentBone(BONE_NAME, cube.name)
     printCreated(cube.name)
+    
 def makeArmLeg():    
     length_Shoulder = (left_shoulder_bone_head_location.x - right_shoulder_bone_head_location.x)
     
@@ -524,6 +532,7 @@ def makeArmLeg():
     makeFeet(right_mid_point, width_Feet, length_Feet, depth_Feet, RIGHT_FOOT_BONE_NAME)
     
     makeGroundChecker(left_mid_point, right_mid_point, depth_Feet)
+    
 def makeGroundChecker(left_mid_point, right_mid_point, RADIUS):
     bpy.ops.mesh.primitive_uv_sphere_add(
         radius=RADIUS,
@@ -535,8 +544,6 @@ def makeGroundChecker(left_mid_point, right_mid_point, RADIUS):
     sphere = bpy.context.active_object
     sphere.name = f"GroundChecker_L"
     
-    makeParentMesh("PlayerCapsule", sphere.name)
-    
     bpy.ops.mesh.primitive_uv_sphere_add(
         radius=RADIUS,
         enter_editmode=False,
@@ -547,8 +554,8 @@ def makeGroundChecker(left_mid_point, right_mid_point, RADIUS):
     sphere = bpy.context.active_object
     sphere.name = f"GroundChecker_R"
     
-    makeParentMesh("PlayerCapsule", sphere.name)
     printCreated(sphere.name)
+    
 def hbm():
     makePlayerCapsule()
     makeHead()
@@ -568,5 +575,4 @@ def main():
         print("Hitbox 생성이 완료되었습니다.")
     
 if __name__ == '__main__':
-
     main()

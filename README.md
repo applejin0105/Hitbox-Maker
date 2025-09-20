@@ -10,6 +10,7 @@
 | NameChange | 뼈의 이름을 변경합니다. 접두사/접미사등 뼈의 이름에 부수적인 것들이 들어가면 이를 지우고 뼈의 이름을 단순화 합니다. |
 | SetOriginLocation | 만일 Edit 모드에서 Scale 작업 이후에 전반적인 위치가 맞지 않는다면 뼈의 위치를 재조정합니다. |
 | TreeMaker | 블렌더에서 Armature의 Tree 구조를 표시합니다. |
+| ModifySkeleton | 스켈레톤의 사이즈를 비율에 맞춰서 조절합니다. |
 
 
 ## Unity
